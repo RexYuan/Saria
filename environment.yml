@@ -1,0 +1,12 @@
+name: poset
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.13
+  - jupyter
+  - pip
+  - pip:
+    - graphviz
+    - networkx
+    - z3-solver=4.8.5.0
