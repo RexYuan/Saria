@@ -416,25 +416,14 @@ We ran 100 trials, with solver timeout set to 15 minutes, on each of the differe
     \label{figure:exp}
 \end{figure}
 
-Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter ($\abs{\Upsilon} = 100$, $\abs{\uni} = 10$).
+Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$. The results show that the method is effective for small to medium-sized inputs, with the number of timeouts increasing as the input size grows.
 
 \section{Conclusions}
-% this cannot be
-The results were disappointing. The next step is to find a way to scale this method and to find a practical use.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bye{
-
-
-\begin{theorem}
-    Permutations and Nerode
-\end{theorem}
-
-}
 
 \appendix
 \renewcommand{\thesection}{\appendixname~\Alph{section}}
-\section{Swapping Function}
+\section{More Results}
 \label{appendix:connected-proof}
 Here we define the \emph{swapping} function. For a linear poset $\poset{L}$ and some $x,y \!\in\! \uni$ with $x \covered y$, $\swapfn{\poset{L}}{x,y}$ is a linear poset $\poset{L}'$ such that $\poset{L} \swap[x,y] \poset{L}'$.
 
