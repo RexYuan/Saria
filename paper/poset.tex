@@ -92,7 +92,7 @@ Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figu
 
 %\vspace{-15px}
 % figure:posetp
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}
         [
@@ -121,7 +121,7 @@ Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figu
 
 %\vspace{-15px}
 % figure:posetl
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}
         [
@@ -163,7 +163,7 @@ Now, we are ready to define the \emph{Poset Cover Problem}.
 
 %\vspace{-15px}
 % figure:cover example
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     % figure:cover example c
     \begin{subfigure}[b]{0.5\textwidth}
@@ -331,7 +331,7 @@ The \emph{adjacent transposition}, or \emph{swap}, relation $\swap$ describes th
 For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{R,PR,VT1}. An iteration of the proof is in \ref{appendix:connected-proof}.
 
 % figure:graphlp
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}
         [
@@ -349,7 +349,7 @@ For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$
 
 We can exploit this property that a swap graph of poset language is connected to avoid exponential blow-up, by ``insulating'' each closed connected component $\upsilon \subseteq \sgraph{\Upsilon}$ with a set $moat(\upsilon) = \set{\poset{L} \!\notin\! \upsilon \mid \exists \poset{L}' \!\in\! \upsilon \  \poset{L}' \swap \poset{L}}$ that encloses it. We denote by $moat(\Upsilon)$ the set $\bigcup_{\upsilon \in comp(\Upsilon)} moat(\upsilon)$, where $comp(\Upsilon)$ is the family of all closed connected components in $\Upsilon$. Figure~\ref{figure:moat} illustrates this idea of moats for two connected components.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}
         \node[draw,ellipse,minimum height=2.5cm,minimum width=1.5cm,fill=white] (comp1) at (8,4) {comp1};
@@ -403,12 +403,14 @@ Although, in general, solving the poset cover problem is hard, in the case that 
 We know, corollarily from Szpilrajn Extension Theorem, which states that every poset has some linearizations ($\lang{\poset{P}} \neq \emptyset$), that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$.
 
 \section{Experimentation}
-To test the limits of our method, we experimented on distinct randomly generated inputs using the z3 theorem prover from Microsoft Research. Also, as inputs with a sparse swap graph can be quickly divided and reduced to smaller problems, we restricted our inputs to those with a single connected swap graph.
+To test the limits of our method, we experimented on distinct randomly generated inputs using the z3 theorem prover from Microsoft Research.
+
+As inputs with a sparse swap graph can be quickly divided and reduced to smaller problems, we restricted our inputs to those with a single connected swap graph.
 
 We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $1 \leq \abs{\uni} \leq 10$ and input size $1 \leq \abs{\Upsilon} \leq 100$. Figure~\ref{figure:exp} shows the number of timeouts out of 100 trials in each case.
 
 % figure:exp
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{bar3d_cropped}
     \caption{Experimental results.}
@@ -417,13 +419,26 @@ We ran 100 trials, with solver timeout set to 15 minutes, on each of the differe
 
 Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$.
 
-An example of a run with $(\abs{\Upsilon} = 10, \abs{\uni} = 9)$ is shown in
+These results show that our method is effective in practice when the universe size is reasonably small.
 
-\begin{figure}[h]
+In addition, considering the swap graph in practice may sparse and not a single connected component, the method can be applied to larger inputs.
+
+In the case of swap graph being a single complex connected component, the number of timeouts increases with the size of the input, but the method is still viable for small to medium-sized inputs.
+
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{bar3d_cropped}
-    \caption{An example with $(\abs{\Upsilon} = 10, \abs{\uni} = 9)$.}
-    \label{figure:exp}
+    \includegraphics[width=0.9\linewidth]{cover_example}
+    \caption{Poset cover of an example with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$.}
+    \label{figure:cover_exp}
+\end{figure}
+
+An example poset cover output of a run with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$ is shown in Figure~\ref{figure:cover_exp}. Its corresponding swap graph is show in \ref{figure:swap_exp}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{swap_graph_example}
+    \caption{Swap graph of an example with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$.}
+    \label{figure:swap_exp}
 \end{figure}
 
 \section{Conclusions}
