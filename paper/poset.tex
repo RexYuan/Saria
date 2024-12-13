@@ -52,7 +52,7 @@
 
 \begin{document}
 
-\title{Poset Paper}
+\title{SAT-Solving the Poset Cover Problem}
 
 \author{Chih-Cheng Rex Yuan \and
         Bow-Yaw Wang}
@@ -65,16 +65,15 @@
 \maketitle
 
 \begin{abstract}
-hello world
+The Poset Cover Problem seeks a minimal set of partial orders whose linear extensions cover a given set of linear orders. Recognizing its NP-completeness, we reduce it to a Boolean satisfiability problem using swap graphs. This method efficiently handles constraints and avoids the exponential growth of naive encodings. By leveraging modern SAT solvers, we effectively solve instances with practical universe sizes. We also explore a special case solvable in polynomial time when the linear orders are linearizations of a single poset. Experimental results using the Z3 theorem prover on randomly generated inputs demonstrate the practicality of our approach, especially when the swap graph is sparse or has multiple connected components.
 \end{abstract}
 
 \section{Introduction}
-Intro part here
-% intro pcp
-% intro converse of lin
-% intro trivial case by Szpilrajn corollary
-% intro trivial non-max solution?
-% intro np completeness?
+In this paper, we address the Poset Cover Problem, which involves finding a minimal set of partial orders whose linear extensions cover a given set of linear orders. The Poset Cover Problem is known to be NP-complete and has applications in areas such as task scheduling, data mining, and bioinformatics. Traditional approaches to solve this problem rely on naive encodings that would result in exponential blow-up, making them impractical.
+
+We propose a novel method to reduce the Poset Cover Problem to a Boolean satisfiability problem by utilizing the concept of swap graphs. This approach efficiently handles problem constraints and avoids the exponential growth associated with naive encodings. By leveraging modern SAT solvers, our method can solve instances of the Poset Cover Problem with a reasonable universe size. Additionally, we explore a special case where the problem can be solved in polynomial time when the given set of linear orders constitutes the linearizations of a single poset.
+
+Our experimental results demonstrate the effectiveness of the proposed method in practice. We conducted extensive testing using the Z3 theorem prover on randomly generated inputs with varying universe and input sizes. The results show that our method performs well, especially when the swap graph of the input is sparse or consists of multiple connected components. Future work includes exploring further optimizations to handle larger inputs and investigating potential applications where partial orders are involved.
 
 \section{Preliminaries}
 A \emph{partial order} is a binary relation that is reflexive, antisymmetric, and transitive. A \emph{partially ordered set} or \emph{poset} is a binary relational structure $\poset{P} = \tuple{\uni, \leq}$ where the \emph{universe} $\uni$ is a set and $\leq$ is a partial order on $\uni$; we refer to members of $\uni$ as elements of $\poset{P}$ and, where specificity is desired, to $\uni$ as $\uni[
@@ -410,7 +409,7 @@ As inputs with a sparse swap graph can be quickly divided and reduced to smaller
 We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $1 \leq \abs{\uni} \leq 10$ and input size $1 \leq \abs{\Upsilon} \leq 100$. Figure~\ref{figure:exp} shows the number of timeouts out of 100 trials in each case.
 
 % figure:exp
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{bar3d_cropped}
     \caption{Experimental results.}
@@ -425,7 +424,7 @@ In addition, considering the swap graph in practice may sparse and not a single 
 
 In the case of swap graph being a single complex connected component, the number of timeouts increases with the size of the input, but the method is still viable for small to medium-sized inputs.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{cover_example}
     \caption{Poset cover of an example with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$.}
@@ -434,7 +433,7 @@ In the case of swap graph being a single complex connected component, the number
 
 An example poset cover output of a run with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$ is shown in Figure~\ref{figure:cover_exp}. Its corresponding swap graph is show in \ref{figure:swap_exp}.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{swap_graph_example}
     \caption{Swap graph of an example with $(\abs{\Upsilon} = 30, \abs{\uni} = 5)$.}
@@ -443,6 +442,7 @@ An example poset cover output of a run with $(\abs{\Upsilon} = 30, \abs{\uni} = 
 
 \section{Conclusions}
 
+In this paper, we have presented a method to reduce the Poset Cover Problem to SAT by utilizing the swap graph to avoid exponential blow-up in naive encodings. Our approach efficiently handles problem constraints and solves instances with a reasonably small universe size. We also considered a special case where the problem can be solved in polynomial time. Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where partial orders are involved, such as message sequence charts and task scheduling.
 
 \appendix
 \renewcommand{\thesection}{\appendixname~\Alph{section}}
@@ -491,6 +491,10 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
 \begin{corollary}
     For a set of linear posets $\Upsilon$, define $\poset{P}$ such that $\leq[\poset{P}] = \bigcap_{\poset{L} \in \Upsilon} \leq[\poset{L}]$. $\lang{\poset{P}} = \Upsilon$ if and only if for all $\poset{L} \!\in\! \Upsilon$ where $x \covered[\poset{L}] y$ and $x \incomp[\poset{P}] y$, $\swapfn{\poset{L}}{x,y} \!\in\! \Upsilon$.
 \end{corollary}
+
+\section*{Acknowledgments}
+
+ChatGPT and Grammarly were used to polish the grammar and style.
 
 \bibliography{poset}
 \bibliographystyle{splncs04}
