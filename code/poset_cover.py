@@ -341,11 +341,12 @@ def poset_cover(lins, getall=False, timeout=None, runaway_timeout=False, render=
 
     # render swap graph
     if render:
-        g = gz.Graph('G', filename=dir+'/swap_graph', format='jpg')
-        if type(lins[0]) == str:
-            g.attr(label='[ '+' '.join(lins)+' ]')
-        else:
-            g.attr(label='[ '+' '.join(map(lambda t : '-'.join(t) , lins))+' ]')
+        g = gz.Graph('G', filename=dir+'/swap_graph', format='pdf')
+        g.attr(rankdir='LR')
+        # if type(lins[0]) == str:
+        #     g.attr(label='[ '+' '.join(lins)+' ]')
+        # else:
+        #     g.attr(label='[ '+' '.join(map(lambda t : '-'.join(t) , lins))+' ]')
         # render components as clusters
         for i, comp in enumerate(nx.connected_components(swap_graph)):
             comp = swap_graph.subgraph(comp)
@@ -355,12 +356,12 @@ def poset_cover(lins, getall=False, timeout=None, runaway_timeout=False, render=
                 edges = list(map(lambda p : ('-'.join(p[0]), '-'.join(p[1])), edges))
             # copy information from networkx to graphviz
             with g.subgraph(name='cluster_'+str(i+1)) as c:
-                c.attr(label='Component '+str(i+1))
+                # c.attr(label='Component '+str(i+1))
                 for n in nodes:
                     c.node(n)
                 c.edges(edges)
         g.render()
-        logger.info("rendered ./%s/swap_graph.jpg", dir)
+        logger.info("rendered ./%s/swap_graph.pdf", dir)
 
     # divide & conquer on connected components
     component_covers = []
@@ -380,18 +381,18 @@ def poset_cover(lins, getall=False, timeout=None, runaway_timeout=False, render=
         # render cover
         if render:
             for j, cover in enumerate(covers if getall else [covers]):
-                g = gz.Digraph('G', filename=dir+'/comp_'+str(i+1)+'_cover_'+str(j+1), format='jpg')
-                g.attr(label='Cover '+str(j+1)+' for component '+str(i+1))
+                g = gz.Digraph('G', filename=dir+'/comp_'+str(i+1)+'_cover_'+str(j+1), format='pdf')
+                # g.attr(label='Cover '+str(j+1)+' for component '+str(i+1))
                 # render posets as clusters
                 for k, poset in enumerate(cover):
                     with g.subgraph(name='cluster_'+str(k+1)) as c:
-                        c.attr(label='Poset '+str(k+1))
+                        # c.attr(label='Poset '+str(k+1))
                         for x,y in rm_trans_closure(omega, poset):
                             c.node('P'+str(k+1)+'_'+x, x)
                             c.node('P'+str(k+1)+'_'+y, y)
                             c.edge('P'+str(k+1)+'_'+x,'P'+str(k+1)+'_'+y)
                 g.render()
-                logger.info("rendered ./%s/comp_%s_cover_%s.jpg", dir, str(i+1), str(j+1))
+                logger.info("rendered ./%s/comp_%s_cover_%s.pdf", dir, str(i+1), str(j+1))
 
     if covers:
         logger.debug("Solution found: %s", component_covers)

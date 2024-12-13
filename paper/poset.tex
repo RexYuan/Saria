@@ -92,7 +92,7 @@ Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figu
 
 %\vspace{-15px}
 % figure:posetp
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \begin{tikzpicture}
         [
@@ -121,7 +121,7 @@ Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figu
 
 %\vspace{-15px}
 % figure:posetl
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \begin{tikzpicture}
         [
@@ -163,7 +163,7 @@ Now, we are ready to define the \emph{Poset Cover Problem}.
 
 %\vspace{-15px}
 % figure:cover example
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     % figure:cover example c
     \begin{subfigure}[b]{0.5\textwidth}
@@ -331,7 +331,7 @@ The \emph{adjacent transposition}, or \emph{swap}, relation $\swap$ describes th
 For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{R,PR,VT1}. An iteration of the proof is in \ref{appendix:connected-proof}.
 
 % figure:graphlp
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \begin{tikzpicture}
         [
@@ -405,18 +405,26 @@ We know, corollarily from Szpilrajn Extension Theorem, which states that every p
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the z3 theorem prover from Microsoft Research. Also, as inputs with a sparse swap graph can be quickly divided and reduced to smaller problems, we restricted our inputs to those with a single connected swap graph.
 
-We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $\abs{\uni}$ and input size $\abs{\Upsilon}$. Figure~\ref{figure:exp} shows the number of timeouts out of 100 trials in each case.
+We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $1 \leq \abs{\uni} \leq 10$ and input size $1 \leq \abs{\Upsilon} \leq 100$. Figure~\ref{figure:exp} shows the number of timeouts out of 100 trials in each case.
 
-% TODO: fix this spacing mess
 % figure:exp
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{bar3d_cropped}
     \caption{Experimental results.}
     \label{figure:exp}
 \end{figure}
 
-Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$. The results show that the method is effective for small to medium-sized inputs, with the number of timeouts increasing as the input size grows.
+Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$.
+
+An example of a run with $(\abs{\Upsilon} = 10, \abs{\uni} = 9)$ is shown in
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{bar3d_cropped}
+    \caption{An example with $(\abs{\Upsilon} = 10, \abs{\uni} = 9)$.}
+    \label{figure:exp}
+\end{figure}
 
 \section{Conclusions}
 

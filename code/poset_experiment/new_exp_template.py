@@ -9,9 +9,9 @@ from time import time
 # 15 minutes
 timeout = 900000
 # status dir path
-status_path = '../'
+status_path = './'
 # trial dir path
-trial_path = '../new_trials/'
+trial_path = './new_trials/'
 
 overall_logger = logging.getLogger('batch '+str(batch))
 overall_logger.setLevel(logging.INFO)
