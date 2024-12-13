@@ -65,15 +65,33 @@
 \maketitle
 
 \begin{abstract}
-The Poset Cover Problem seeks a minimal set of partial orders whose linear extensions cover a given set of linear orders. Recognizing its NP-completeness, we reduce it to a Boolean satisfiability problem using swap graphs. This method efficiently handles constraints and avoids the exponential growth of naive encodings. By leveraging modern SAT solvers, we effectively solve instances with practical universe sizes. We also explore a special case solvable in polynomial time when the linear orders are linearizations of a single poset. Experimental results using the Z3 theorem prover on randomly generated inputs demonstrate the practicality of our approach, especially when the swap graph is sparse or has multiple connected components.
+
+    non-trivial
+
+The Poset Cover Problem seeks a minimal set of partial orders whose linear extensions cover a given set of linear orders. Recognizing its NP-completeness, we reduce it to a Boolean satisfiability problem using swap graphs. This method efficiently handles constraints and avoids the exponential growth of naive encodings. By leveraging modern SAT solvers, we effectively solve instances with practical universe sizes. We also explore a special case solvable in polynomial time when the linear orders are linearizations of a single poset. Experimental results using the Z3 theorem prover on randomly generated inputs demonstrate the effectiveness of our method.
 \end{abstract}
 
 \section{Introduction}
-In this paper, we address the Poset Cover Problem, which involves finding a minimal set of partial orders whose linear extensions cover a given set of linear orders. The Poset Cover Problem is known to be NP-complete and has applications in areas such as task scheduling, data mining, and bioinformatics. Traditional approaches to solve this problem rely on naive encodings that would result in exponential blow-up, making them impractical.
 
-We propose a novel method to reduce the Poset Cover Problem to a Boolean satisfiability problem by utilizing the concept of swap graphs. This approach efficiently handles problem constraints and avoids the exponential growth associated with naive encodings. By leveraging modern SAT solvers, our method can solve instances of the Poset Cover Problem with a reasonable universe size. Additionally, we explore a special case where the problem can be solved in polynomial time when the given set of linear orders constitutes the linearizations of a single poset.
+Orders have been in our lives as long as humans can order things. We organize our tasks, prioritize our goals, and rank our preferences. Orders are everywhere in our world.
 
-Our experimental results demonstrate the effectiveness of the proposed method in practice. We conducted extensive testing using the Z3 theorem prover on randomly generated inputs with varying universe and input sizes. The results show that our method performs well, especially when the swap graph of the input is sparse or consists of multiple connected components. Future work includes exploring further optimizations to handle larger inputs and investigating potential applications where partial orders are involved.
+Partial orders, a generalization of orders, are a mathematical construct that captures the essence of non-linear ordering. For example, we can order both the fields of physics and chemistry under the general category of natural science, but we cannot say one is contained in the other.
+
+We can find partial orders in various places in the wild. Scheduling tasks and analyzing biological sequences are but a few examples of partial orders that find themselves in\cite{heath2013poset,fernandez2013mining}.
+
+Mathematicians have formalized the concept of partial orders as a set of elements with a binary relation that is reflexive, antisymmetric, and transitive. This structure is called a partially ordered set, or \emph{poset} for short.
+
+By a foundational theorem called Szpilrajn extension theorem, every poset has a set of linear extensions. Intuitively, this means we can ``stretch'' a poset into a linear order. This is a powerful result that allows us to study posets by looking at their linearizations.
+
+In this paper, we address the poset cover problem. The poset cover problem is a combinatorial problem that involves finding a minimum set of partial orders whose linear extensions cover a given set of linear orders.
+
+The poset cover problem is known to be NP-complete\cite{heath2013poset}. We hence chose to leverage the power of modern SAT solvers to tackle this problem.
+
+We propose a novel non-trivial method to reduce the poset cover problem to a Boolean satisfiability problem by utilizing the concept of swap graphs. This approach efficiently handles problem constraints and avoids the exponential growth of naive encodings.
+
+Our method can solve instances of the poset cover problem with a reasonable universe size. We also explore a special case where the problem can be solved in polynomial time when the given set of linear orders constitutes the linearizations of a single poset.
+
+Our experimental results demonstrate the effectiveness of the proposed method. We extensively tested using the Z3\cite{de2008z3} theorem prover in Python on randomly generated inputs with varying universe and input sizes. The results show that our method performs well and could be further optimized by a simple divide-and-conquer heuristic. Future work includes exploring further optimizations to handle larger inputs and investigating potential applications involving partial orders, such as message sequence charts.
 
 \section{Preliminaries}
 A \emph{partial order} is a binary relation that is reflexive, antisymmetric, and transitive. A \emph{partially ordered set} or \emph{poset} is a binary relational structure $\poset{P} = \tuple{\uni, \leq}$ where the \emph{universe} $\uni$ is a set and $\leq$ is a partial order on $\uni$; we refer to members of $\uni$ as elements of $\poset{P}$ and, where specificity is desired, to $\uni$ as $\uni[
@@ -260,7 +278,7 @@ Now, we are ready to define the \emph{Poset Cover Problem}.
 A minimal poset cover may not be unique, and the languages of the posets in a cover may overlap. For Example~\ref{example:cover example}, there is another minimal poset cover, shown in Figure~\ref{figure:cover example c'}, with overlapping languages ${\lang{\poset{C}} = \set{\lin{abdce},\lin{abcde},\lin{abdec}}}$ and ${\lang{\poset{D}} = \set{\lin{abdce},\lin{badce}}}$.
 
 \section{Reduction to SAT}
-Since the poset cover problem is proved to be NP-complete \cite{VT1}, we reduce the problem to SAT to utilize the power of modern SAT solvers. However, a naive encoding would easily result in superpolynomial transformation. We shall first show where the naive encoding falls short and then present a more efficient method.
+Since the poset cover problem is proved to be NP-complete \cite{heath2013poset}, we reduce the problem to SAT to utilize the power of modern SAT solvers. However, a naive encoding would easily result in superpolynomial transformation. We shall first show where the naive encoding falls short and then present a more efficient method.
 
 \subsection{Basic Constraints}
 Before getting into constraints given by the problem, here we give the definitions and constraints for the basic poset construction.
@@ -327,7 +345,7 @@ Since $\Upsilon \subseteq \bigcup_{\poset{P} \in C} \lang{\poset{P}}$ can be eff
 
 The \emph{adjacent transposition}, or \emph{swap}, relation $\swap$ describes the case of ``off by one swap'' between linear posets with shared universe: for linear posets $\poset{L}_1,\poset{L}_2$, $\poset{L}_1 \swap \poset{L}_2$ if and only if there are $x, y \!\in\! \uni$ such that $\leq[\poset{L}_1] \cap \leq[\poset{L}_2] = {(\leq[\poset{L}_1] \cup \leq[\poset{L}_2])} - \set{\tuple{x,y},\tuple{y,x}}$; to specify which $x,y$ induce the relation, we write $\swap[x,y]$. For example, \lin{abcd} $\swap[b,c]$ \lin{acbd}. Note that $\swap$ is symmetric.
 
-For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{R,PR,VT1}. An iteration of the proof is in \ref{appendix:connected-proof}.
+For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{ruskey1992generating,pruesse1991generating,heath2013poset}. An iteration of the proof is in \ref{appendix:connected-proof}.
 
 % figure:graphlp
 \begin{figure}[H]
@@ -399,7 +417,7 @@ Finally, with swap graph method, we need not encode the entire problem input in 
 \section{A Special Case}
 Although, in general, solving the poset cover problem is hard, in the case that the given set of linearizations constitutes the language of a single poset, the problem can be solved in polynomial time. We can consider this special case as an opening jab at the problem, returning if and once it succeeds.
 
-We know, corollarily from Szpilrajn Extension Theorem, which states that every poset has some linearizations ($\lang{\poset{P}} \neq \emptyset$), that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$.
+We know, corollarily from Szpilrajn extension theorem, which states that every poset has some linearizations ($\lang{\poset{P}} \neq \emptyset$), that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$.
 
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the z3 theorem prover from Microsoft Research.
@@ -452,7 +470,7 @@ Here we define the \emph{swapping} function. For a linear poset $\poset{L}$ and 
 
 A \emph{swapping sequence} of length $n$ from a linear poset $\poset{L}$ to a linear poset $\poset{L}'$ is a sequence of linear posets $\poset{L} = \poset{L}_0, \poset{L}_1, ... , \poset{L}_n = \poset{L}'$ obtained by collecting the breadcrumbs of recursively swapping $\poset{L}$ with some sequence of element pairs $x_1,y_1 \ ;\  ... \ ;\  x_n,y_n$ such that $\swapfn{\poset{L}}{x_1,y_1} ... [x_n,y_n] = \poset{L}'$; i.e., $\swapfn{\poset{L}}{x_1,y_1} ... [x_k,y_k] = \poset{L}_k$ for $0 < k < n$.
 
-The length of a minimal swapping sequence from $\poset{L}$ to $\poset{L}'$ is the inversion number $\inv{\poset{L}}{\poset{L}'}$ sorting $\poset{L}$ to $\poset{L}'$, as each swapping in a sequence either increases or decreases the inversion number by $1$ \cite{R}, and a minimal sequence is where it decreases every step; i.e., $\inv{\poset{L}_{k+1}}{\poset{L}'} = \inv{\poset{L}_k}{\poset{L}'} - 1$ for $0 \leq k < n$. It is also known as the Kendall tau distance, or the bubble-sort distance, between them, which counts the number of discordant pairs, i.e., inversions.
+The length of a minimal swapping sequence from $\poset{L}$ to $\poset{L}'$ is the inversion number $\inv{\poset{L}}{\poset{L}'}$ sorting $\poset{L}$ to $\poset{L}'$, as each swapping in a sequence either increases or decreases the inversion number by $1$ \cite{ruskey1992generating}, and a minimal sequence is where it decreases every step; i.e., $\inv{\poset{L}_{k+1}}{\poset{L}'} = \inv{\poset{L}_k}{\poset{L}'} - 1$ for $0 \leq k < n$. It is also known as the Kendall tau distance, or the bubble-sort distance, between them, which counts the number of discordant pairs, i.e., inversions.
 
 In addition, we describe the case of \emph{incomparability} in a poset $\poset{P}$ with $\incomp$ relation: for $x, y \!\in\! \poset{P}$, $x \incomp y$ if and only if $x \nleq y$ and $y \nleq x$. For Example~\ref{example:posetp}, there is $b \incomp c$.
 
@@ -460,7 +478,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
     For posets $\poset{P},\poset{L}$ with $\poset{P} \lext \poset{L}$, if $\incomp[\poset{P}]\> \neq \emptyset$, then there is $x,y$ with $x \incomp[\poset{P}] y$ such that $x \covered[\poset{L}] y$.
 \end{lemma}
 
-\begin{lemma}[\cite{VT1}]
+\begin{lemma}[\cite{heath2013poset}]
     For posets $\poset{P},\poset{L}$ with $\poset{P} \lext \poset{L}$, if $x \incomp[\poset{P}] y$ and $x \covered[\poset{L}] y$, then there is $\poset{L}'$ such that $\poset{P} \lext \poset{L}'$ and $y \covered[\poset{L}'] x$.
 \end{lemma}
 
@@ -472,7 +490,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
     For posets $\poset{P},\poset{L},\poset{L}'$ with $\poset{L} \!\neq\! \poset{L}'$ and $\poset{P} \lext \poset{L},\poset{L}'$, their inversion set corresponds to the complement of their intersection.
 \end{lemma}
 
-\begin{lemma}[\cite{R}]
+\begin{lemma}[\cite{ruskey1992generating}]
     For posets $\poset{P},\poset{L},\poset{L}'$ with $\poset{L} \!\neq\! \poset{L}'$ and $\poset{P} \lext \poset{L},\poset{L}'$, the distance between $\poset{L}$ and $\poset{L}'$ in $\sgraph{\lang{\poset{P}}}$ is the length of a minimal swapping sequence from $\poset{L}$ to $\poset{L}'$.
 \end{lemma}
 
@@ -494,7 +512,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
 
 \section*{Acknowledgments}
 
-ChatGPT and Grammarly were used to polish the grammar and style.
+Grammarly was used to check and improve the text.
 
 \bibliography{poset}
 \bibliographystyle{splncs04}
