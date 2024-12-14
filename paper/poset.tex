@@ -72,7 +72,7 @@ The poset cover problem seeks a minimum set of partial orders whose linear exten
 
 Orders have been in our lives as long as humans can order things. We organize our tasks, prioritize our goals, and rank our preferences. Orders are everywhere in our world.
 
-Partial orders, a generalization of orders, are a mathematical construct that captures the essence of non-linear ordering. For example, we can order both the fields of physics and chemistry under the general category of natural science, but we cannot say one is contained in the other.
+Partial orders, a generalization of orders, are a mathematical construct that captures the essence of non-linear ordering. For example, we can order both the fields of physics and chemistry under the general category of natural science, but we cannot say one is under the other.
 
 We can find partial orders in various places in the wild. Scheduling tasks and analyzing biological sequences are but a few examples of partial orders that find themselves in\cite{heath2013poset,fernandez2013mining}.
 
@@ -84,7 +84,7 @@ In this paper, we address the poset cover problem. The poset cover problem is a 
 
 The poset cover problem is known to be NP-complete\cite{heath2013poset}. We hence chose to leverage the power of modern SAT solvers to tackle this problem.
 
-We propose a novel non-trivial method to reduce the poset cover problem to a Boolean satisfiability problem by utilizing the concept of swap graphs. This approach efficiently handles problem constraints and avoids the exponential growth of naive encodings.
+We propose a novel and non-trivial method to reduce the poset cover problem to a Boolean satisfiability problem by utilizing the concept of swap graphs. This approach efficiently handles problem constraints and avoids the exponential growth of naive encodings.
 
 Our method can solve instances of the poset cover problem with a reasonable universe size. We also explore a special case where the problem can be solved in polynomial time when the given set of linear orders constitutes the linearizations of a single poset.
 
