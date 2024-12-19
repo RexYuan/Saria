@@ -167,7 +167,7 @@ Now, we are ready to define the \emph{poset cover problem}.
 \begin{definition}[Poset Cover Problem]
     Given a set of linear posets $\Upsilon$, find a set of partial orders $C$, called a cover, such that $\abs{C}$ is minimal and the union of the languages of posets in $C$ is equal to $\Upsilon$; that is, $\Upsilon = \bigcup_{\poset{P} \in C} \lang{\poset{P}}$.
 
-    Note that the poset cover problem is equivalent to finding a minimal set of graphs whose topological sorts yield the given set of linearizations.
+    Note that the poset cover problem is equivalent to finding a minimal set of graphs whose topological sorts yield the given set of paths.
     \label{definition:pcp}
 \end{definition}
 
@@ -295,7 +295,7 @@ and transitivity with
 \bigwedge_{x \neq y \neq z \in \uni}
 \satvar{x,y}{\poset{P}} \wedge \satvar{y,z}{\poset{P}} \implies \satvar{x,z}{\poset{P}}
 \]
-Moreover, if $\poset{P}$ is linear, we have to add on top of that
+Moreover, if $\poset{P}$ is linear, we add, on top of that
 \[
 \bigwedge_{x \neq y \in \uni} \satvar{x,y}{\poset{P}} \vee \satvar{y,x}{\poset{P}}
 \]
@@ -357,7 +357,7 @@ For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$
 \end{figure}
 %\vspace{-15px}
 
-We can exploit this property that a swap graph of poset language is connected to avoid exponential blow-up, by ``insulating'' each closed connected component $\upsilon \subseteq \sgraph{\Upsilon}$ with a set $moat(\upsilon) = \set{\poset{L} \!\notin\! \upsilon \mid \exists \poset{L}' \!\in\! \upsilon \  \poset{L}' \swap \poset{L}}$ that encloses it. We denote by $moat(\Upsilon)$ the set $\bigcup_{\upsilon \in comp(\Upsilon)} moat(\upsilon)$, where $comp(\Upsilon)$ is the family of all closed connected components in $\Upsilon$. Figure~\ref{figure:moat} illustrates this idea of moats for two connected components.
+We can exploit this property that a swap graph of poset language is connected to avoid exponential blow-up, by ``insulating'' each strongly connected component $\upsilon \subseteq \sgraph{\Upsilon}$ with a set $moat(\upsilon) = \set{\poset{L} \!\notin\! \upsilon \mid \exists \poset{L}' \!\in\! \upsilon \  \poset{L}' \swap \poset{L}}$ that encloses it. We denote by $moat(\Upsilon)$ the set $\bigcup_{\upsilon \in comp(\Upsilon)} moat(\upsilon)$, where $comp(\Upsilon)$ is the set of all strongly connected components in $\Upsilon$. Figure~\ref{figure:moat} illustrates this idea of moats for two strongly connected components.
 
 \begin{figure}[h]
     \centering
@@ -376,7 +376,7 @@ We can exploit this property that a swap graph of poset language is connected to
 
         \node[draw,fit=(comp1moat)(comp2moat)] (x) {};
     \end{tikzpicture}
-    \caption{Illustration of moats around connected components.}
+    \caption{Illustration of moats around strongly connected components.}
     \label{figure:moat}
 \end{figure}
 
@@ -399,7 +399,7 @@ The construction of $\sgraph{\Upsilon}$ and $moat(\Upsilon)$ together costs $\bi
 When the input linearizations overwhelm the swap graph universe $\abs{moat(\Upsilon)} > \abs{\complmt{\Upsilon}}$ and the moat method becomes inefficient, we can revert back to the naive method. This is especially useful when the input is extremely dense.
 
 \subsubsection{XOR Encoding}
-Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more clauses. We can avoid this requirement since it, combined with antisymmetry, is equivalent to an encoding using XOR($\oplus$).
+Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more constraints. We can avoid this requirement since it, combined with antisymmetry, is equivalent to an encoding using XOR($\oplus$).
 \[
 \bigwedge_{x \neq y \in \uni} \neg (\satvar{x,y}{\poset{P}} \wedge \satvar{y,x}{\poset{P}})
 \wedge
@@ -419,14 +419,14 @@ To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. 
 \]
 
 \subsubsection{Divide and Conquer}
-Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of SAT queries polynomial in $\abs{\Upsilon}$. This is especially efficient when $\Upsilon$ is sparse.
+Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of SAT queries polynomial in $\abs{\Upsilon}$. This is especially efficient when the input is sparse.
 
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research in Python.
 
-As inputs with a sparse swap graph can be quickly divided and reduced to smaller problems, we restricted our inputs to those with a single connected swap graph.
+As inputs with a sparse swap graph can be quickly divided and reduced to smaller sub-problems, we restricted our inputs to those with a single connected swap graph in order to maximize the the difficulty of the sub-problem.
 
-We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $1 \leq \abs{\uni} \leq 10$ and input size $1 \leq \abs{\Upsilon} \leq 100$. Figure~\ref{figure:exp} shows the number of timeouts out of 100 trials in each case.
+We ran 100 trials, with solver timeout set to 15 minutes, on each of the different settings of universe size $1 \leq \abs{\uni} \leq 10$ and input size $1 \leq \abs{\Upsilon} \leq 100$. Figure~\ref{figure:exp} shows the number of timeouts out of the 100 trials in each case.
 
 % figure:exp
 \begin{figure}[h]
@@ -436,13 +436,11 @@ We ran 100 trials, with solver timeout set to 15 minutes, on each of the differe
     \label{figure:exp}
 \end{figure}
 
-Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeout under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$.
+Cases where $\abs{\Upsilon} \leq 20$ or $\abs{\uni} \leq 4$ are omitted because they gave no timeouts under extensive testing (over 3000 trials) of combinations with the largest the other parameter: $(\abs{\Upsilon} = 100, \abs{\uni} = 4)$ and $(\abs{\Upsilon} = 20, \abs{\uni} = 10)$.
 
-These results show that our method is effective in practice when the universe size is reasonably small.
+In the case of the swap graph being a single complex strongly connected component, the number of timeouts increases with the size of the input. These results show that our method is most effective in practice when each component is reasonably small to medium-sized.
 
-In addition, considering the swap graph in practice may be sparse and not a single connected component, the method can be applied to larger inputs.
-
-In the case of swap graph being a single complex connected component, the number of timeouts increases with the size of the input, but the method is still viable for small to medium-sized inputs.
+In addition, considering the swap graph in practice may be sparse and not a single component, the method can be applied to larger inputs. The divide-and-conquer heuristic can quickly reduce the problem size, and the sub-problems can even be solved in parallel.
 
 \begin{figure}[h]
     \centering
@@ -464,9 +462,9 @@ An example poset cover output of a run with $(\abs{\Upsilon} = 30, \abs{\uni} = 
 
 We presented a novel and non-trivial method to reduce the poset cover problem to the Boolean satisfiability problem. We utilized what we call the ``swap graph'' to avoid exponential blow-up in naive encodings.
 
-Swap graphs enabled a divide-and-conquer heuristic to quickly reduce the problem size. Even under the cases where the inputs cannot be divided into smaller sub-problems, our approach efficiently handles problem constraints and solves instances with a reasonable universe size.
+Swap graphs enabled a divide-and-conquer heuristic to quickly reduce the problem size. Even under the cases where the inputs cannot be divided into smaller sub-problems, our approach efficiently handles problem constraints and solves instances with a reasonable size.
 
-Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where partial orders are involved, such as message sequence charts.
+Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where the poset cover problems is relevant, such as message sequence charts synthesis from traces.
 
 \appendix
 \renewcommand{\thesection}{\appendixname~\Alph{section}}
@@ -509,7 +507,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
 \end{theorem}
 
 \begin{corollary}
-    For a set of linear posets $\Upsilon$, there is a poset $\poset{P}$ with $\lang{\poset{P}} = \Upsilon$ if and only if for all $\poset{L}, \poset{L}' \!\in\! \Upsilon$ and for all minimal swapping sequence $\pi$ from $\poset{L}$ to $\poset{L}'$, $\poset{L}'' \!\in\! \Upsilon$ for all $\poset{L}'' \!\in\! \pi$.
+    For a set of linear posets $\Upsilon$, there is a poset $\poset{P}$ with $\lang{\poset{P}} = \Upsilon$ if and only if for all $\poset{L}, \poset{L}' \!\in\! \Upsilon$ and for all minimal swapping sequence $\pi$ from $\poset{L}$ to $\poset{L}'$, we have $\poset{L}'' \!\in\! \Upsilon$ for all $\poset{L}'' \!\in\! \pi$.
 \end{corollary}
 
 \begin{corollary}
