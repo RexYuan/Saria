@@ -87,16 +87,16 @@ def poset_axioms(universe, name, total=False):
 
     for x in omega:
         for y in omega-{x}:
-            # if total:
-            #     # forall x!=y, (x<y xor y<x)
-            #     constraints = simplify(And( constraints , Xor(rel(x,y),rel(y,x)) ))
-            # else:
-            # forall x!=y, -(x<y & y<x)
-            constraints = simplify(And( constraints , Not( And(rel(x,y),rel(y,x)) ) ))
-
             if total:
-                # forall x!=y, (x<y | y<x)
-                constraints = simplify(And( constraints , Or( rel(x,y),rel(y,x) ) ))
+                # forall x!=y, (x<y xor y<x)
+                constraints = simplify(And( constraints , Xor(rel(x,y),rel(y,x)) ))
+            else:
+                # forall x!=y, -(x<y & y<x)
+                constraints = simplify(And( constraints , Not( And(rel(x,y),rel(y,x)) ) ))
+
+            # if total:
+            #     # forall x!=y, (x<y | y<x)
+            #     constraints = simplify(And( constraints , Or( rel(x,y),rel(y,x) ) ))
 
             for z in omega-{x,y}:
                 # forall x!=y!=z, (x<y & y<z) => x<z
