@@ -421,6 +421,11 @@ To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. 
 \subsubsection{Divide and Conquer}
 Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of SAT queries polynomial in $\abs{\Upsilon}$. This is especially efficient when the input is sparse.
 
+\section{A Special Case}
+Although, in general, solving the poset cover problem is hard, in the case that the given set of linearizations constitutes the language of a single poset, the problem can be solved in polynomial time. We can consider this special case as an opening jab at the problem, returning if and once it succeeds.
+
+We know, corollarily from Szpilrajn extension theorem, that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$. Additionally, with Corollary~\ref{corollary:final}, we can determine if a set of linearizations constitutes the language of a single poset in time $\bigo{\abs{\Upsilon} \!\cdot\! \abs{\uni}}$, and the solution to the poset cover problem is then the poset formed by the intersection of all linearizations.
+
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research in Python.
 
@@ -511,6 +516,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
 \end{corollary}
 
 \begin{corollary}
+    \label{corollary:final}
     For a set of linear posets $\Upsilon$, define $\poset{P}$ such that $\leq[\poset{P}] = \bigcap_{\poset{L} \in \Upsilon} \leq[\poset{L}]$. $\lang{\poset{P}} = \Upsilon$ if and only if for all $\poset{L} \!\in\! \Upsilon$ where $x \covered[\poset{L}] y$ and $x \incomp[\poset{P}] y$, $\swapfn{\poset{L}}{x,y} \!\in\! \Upsilon$.
 \end{corollary}
 
