@@ -419,7 +419,7 @@ To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. 
 \]
 
 \subsubsection{Divide and Conquer}
-Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of queries polynomial in $\abs{\Upsilon}$. This is especially efficient when $\Upsilon$ is sparse.
+Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of SAT queries polynomial in $\abs{\Upsilon}$. This is especially efficient when $\Upsilon$ is sparse.
 
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research in Python.
