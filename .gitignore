@@ -13,3 +13,4 @@ __pycache__
 code/poset_new_exp_batch
 code/new_trials
 code/*.txt
+code/graphs

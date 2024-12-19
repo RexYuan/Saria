@@ -395,17 +395,26 @@ The construction of $\sgraph{\Upsilon}$ and $moat(\Upsilon)$ together costs $\bi
 \end{proof}
 
 \subsection{Some More Improvements}
-Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more clauses. We can avoid this requirement since it, combined with antisymmetry, is equivalent to
+\subsubsection{XOR Encoding}
+Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more clauses. We can avoid this requirement since it, combined with antisymmetry, is equivalent to an encoding using $\textbf{XOR}$($\oplus$).
 \[
+\bigwedge_{x \neq y \in \uni} \neg (\satvar{x,y}{\poset{P}} \wedge \satvar{y,x}{\poset{P}})
+\wedge
+\bigwedge_{x \neq y \in \uni} \satvar{x,y}{\poset{P}} \vee \satvar{y,x}{\poset{P}}
+\bicond
 \bigwedge_{x \neq y \in \uni} \satvar{x,y}{\poset{P}} \oplus \satvar{y,x}{\poset{P}}
 \]
-To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. However, since the problem input includes complete order relation $\leq[\poset{L}]$ of all given $\poset{L} \!\in\! \Upsilon$, we can skip the axioms and set each variable directly.
+
+\subsubsection{Skipping Linearizations}
+To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. However, since the problem input includes complete order relation $\leq[\poset{L}]$ of all given $\poset{L} \!\in\! \Upsilon$, we can skip the axioms for $\poset{L}$ and set each variable constrained by $\poset{L}$ directly on $\poset{P}$.
 
 In fact, it is even possible to skip encoding linearizations altogether. We can disregard the whole of $\poset{L}$ and lose all the variables for $\poset{L}$, by taking the contrapositive form of $\lext$, so we encode $\poset{P} \lext \poset{L}$ with
 \[
 \bigwedge_{x,y \in \complmt{\leq[\poset{L}]}} \neg \satvar{x,y}{\poset{P}}
 \]
-Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which could further reduce the number of clauses, with trade-off being the number of queries polynomial in $\abs{\Upsilon}$, especially when $\Upsilon$ is sparse.
+
+\subsubsection{Divide and Conquer}
+Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which could further reduce the number of clauses, with trade-off being the number of queries polynomial in $\abs{\Upsilon}$. This is efficient especially when $\Upsilon$ is sparse.
 
 \section{A Special Case}
 Although, in general, solving the poset cover problem is hard, in the case that the given set of linearizations constitutes the language of a single poset, the problem can be solved in polynomial time. We can consider this special case as an opening jab at the problem, returning if and once it succeeds.

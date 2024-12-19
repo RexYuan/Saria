@@ -87,6 +87,10 @@ def poset_axioms(universe, name, total=False):
 
     for x in omega:
         for y in omega-{x}:
+            # if total:
+            #     # forall x!=y, (x<y xor y<x)
+            #     constraints = simplify(And( constraints , Xor(rel(x,y),rel(y,x)) ))
+            # else:
             # forall x!=y, -(x<y & y<x)
             constraints = simplify(And( constraints , Not( And(rel(x,y),rel(y,x)) ) ))
 
@@ -109,8 +113,21 @@ def le_constraints(universe, name, lin):
     '''
     def rel(x, y):
         return Bool('P'+name+'_'+x+'<'+y)
+    def linrel(x, y):
+        return Bool('P'+str(lin)+'_'+x+'<'+y)
     constraints = TAUTO
     omega = set(universe)
+
+    # constraints = simplify(And( constraints , poset_axioms(omega, str(lin), total=True) ))
+
+    # # forall r, r
+    # for x in omega:
+    #     for y in omega-{x}:
+    #         constraints = simplify(And( constraints , Implies(rel(x,y), linrel(x,y)) ))
+
+    # return constraints
+
+
 
     ords = set()
     # cartesian set
@@ -192,7 +209,7 @@ def connected_poset_cover(lins=None, comp=None, getall=False, timeout=None, runa
                    map( lambda l : set(get_swap(l)) , lins ) ) ))
 
     # make k posets ; worst case is size of lins
-    for k in range(1, len(lins)+1):
+    for k in range(1, 2):
         s.reset()
 
         logger.debug("Trying with %s posets!", k)
