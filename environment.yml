@@ -9,4 +9,4 @@ dependencies:
   - pip:
     - graphviz
     - networkx
-    - z3-solver=4.8.5.0
+    - z3-solver==4.8.5.0
