@@ -395,8 +395,11 @@ The construction of $\sgraph{\Upsilon}$ and $moat(\Upsilon)$ together costs $\bi
 \end{proof}
 
 \subsection{Some More Improvements}
+\subsubsection{Reverting to Naivety}
+When the input linearizations overwhelm the swap graph universe $\abs{moat(\Upsilon)} > \abs{\complmt{\Upsilon}}$ and the moat method becomes inefficient, we can revert back to the naive method. This is especially useful when the input is extremely dense.
+
 \subsubsection{XOR Encoding}
-Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more clauses. We can avoid this requirement since it, combined with antisymmetry, is equivalent to an encoding using $\textbf{XOR}$($\oplus$).
+Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to enforce total comparability by adding more clauses. We can avoid this requirement since it, combined with antisymmetry, is equivalent to an encoding using XOR($\oplus$).
 \[
 \bigwedge_{x \neq y \in \uni} \neg (\satvar{x,y}{\poset{P}} \wedge \satvar{y,x}{\poset{P}})
 \wedge
@@ -405,16 +408,18 @@ Recall in section \ref{subsubsec:linear}, when encoding linear posets, we had to
 \bigwedge_{x \neq y \in \uni} \satvar{x,y}{\poset{P}} \oplus \satvar{y,x}{\poset{P}}
 \]
 
-\subsubsection{Skipping Linearizations}
-To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. However, since the problem input includes complete order relation $\leq[\poset{L}]$ of all given $\poset{L} \!\in\! \Upsilon$, we can skip the axioms for $\poset{L}$ and set each variable constrained by $\poset{L}$ directly on $\poset{P}$.
-
-In fact, it is even possible to skip encoding linearizations altogether. We can disregard the whole of $\poset{L}$ and lose all the variables for $\poset{L}$, by taking the contrapositive form of $\lext$, so we encode $\poset{P} \lext \poset{L}$ with
+\subsubsection{Skipping $\poset{L}$}
+To encode $\poset{P} \lext \poset{L}$, we had to encode axioms for both posets. However, since the problem input includes complete order relation $\leq[\poset{L}]$ of all given $\poset{L} \!\in\! \Upsilon$, we can skip the encodings for $\poset{L}$ and set each variable constrained by $\poset{L}$ directly on $\poset{P}$, by taking the contrapositive form of $\lext$. This way, it is possible to lose all the variables for $\poset{L}$ and the associated constraints.
 \[
+\bigwedge_{x \neq y \in \uni} \satvar{x,y}{\poset{P}} \implies \satvar{x,y}{\poset{L}}
+\bicond
+\bigwedge_{x \neq y \in \uni} \neg \satvar{x,y}{\poset{L}} \implies \neg \satvar{x,y}{\poset{P}}
+\bicond
 \bigwedge_{x,y \in \complmt{\leq[\poset{L}]}} \neg \satvar{x,y}{\poset{P}}
 \]
 
 \subsubsection{Divide and Conquer}
-Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which could further reduce the number of clauses, with trade-off being the number of queries polynomial in $\abs{\Upsilon}$. This is efficient especially when $\Upsilon$ is sparse.
+Finally, with swap graph method, we need not encode the entire problem input in one go. Instead, we can tackle each component $\upsilon \!\in\! comp(\Upsilon)$ individually, which further reduces the number of clauses, with trade-off being the number of queries polynomial in $\abs{\Upsilon}$. This is especially efficient when $\Upsilon$ is sparse.
 
 \section{A Special Case}
 Although, in general, solving the poset cover problem is hard, in the case that the given set of linearizations constitutes the language of a single poset, the problem can be solved in polynomial time. We can consider this special case as an opening jab at the problem, returning if and once it succeeds.
@@ -422,7 +427,7 @@ Although, in general, solving the poset cover problem is hard, in the case that 
 We know, corollarily from Szpilrajn extension theorem, which states that every poset has some linearizations ($\lang{\poset{P}} \neq \emptyset$), that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$.
 
 \section{Experimentation}
-To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research.
+To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research in Python.
 
 As inputs with a sparse swap graph can be quickly divided and reduced to smaller problems, we restricted our inputs to those with a single connected swap graph.
 
