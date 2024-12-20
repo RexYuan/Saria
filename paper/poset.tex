@@ -1,4 +1,5 @@
-\documentclass[12pt]{llncs}
+% \documentclass[12pt]{llncs}
+\documentclass{llncs}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -472,7 +473,7 @@ Swap graphs enabled a divide-and-conquer heuristic to quickly reduce the problem
 Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where the poset cover problems is relevant, such as message sequence charts synthesis from traces.
 
 \appendix
-\renewcommand{\thesection}{\appendixname~\Alph{section}}
+\renewcommand{\thesection}{\appendixname}
 \section{Details}
 \label{appendix:connected-proof}
 Here we define the \emph{swapping} function. For a linear poset $\poset{L}$ and some $x,y \!\in\! \uni$ with $x \covered y$, $\swapfn{\poset{L}}{x,y}$ is a linear poset $\poset{L}'$ such that $\poset{L} \swap[x,y] \poset{L}'$.
@@ -519,6 +520,11 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
     \label{corollary:final}
     For a set of linear posets $\Upsilon$, define $\poset{P}$ such that $\leq[\poset{P}] = \bigcap_{\poset{L} \in \Upsilon} \leq[\poset{L}]$. $\lang{\poset{P}} = \Upsilon$ if and only if for all $\poset{L} \!\in\! \Upsilon$ where $x \covered[\poset{L}] y$ and $x \incomp[\poset{P}] y$, $\swapfn{\poset{L}}{x,y} \!\in\! \Upsilon$.
 \end{corollary}
+
+\begin{credits}
+\subsubsection{\ackname}
+This project is partially supported by X from Y.
+\end{credits}
 
 \bibliography{poset}
 \bibliographystyle{splncs04}
