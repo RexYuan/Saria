@@ -1,0 +1,92 @@
+graph G {
+	rankdir=LR
+	subgraph cluster_1 {
+		decab
+		bacde
+		cdaeb
+		deacb
+		eacdb
+		cabde
+		adecb
+		ecbad
+		bdace
+		acbde
+		badce
+		ceadb
+		abcde
+		dbace
+		bcaed
+		deabc
+		caebd
+		dcaeb
+		dacbe
+		adceb
+		ecdab
+		cebad
+		acdeb
+		cedab
+		caedb
+		cdabe
+		acbed
+		daecb
+		baced
+		acebd
+		daceb
+		abced
+		abecd
+		acedb
+		edcab
+		aecbd
+		aecdb
+		ceabd
+		acdbe
+		cedba
+		decab -- deacb
+		decab -- edcab
+		bacde -- badce
+		bacde -- abcde
+		bacde -- baced
+		cdaeb -- dcaeb
+		cdaeb -- cdabe
+		deacb -- deabc
+		deacb -- daecb
+		eacdb -- aecdb
+		cabde -- acbde
+		adecb -- adceb
+		adecb -- daecb
+		ecbad -- cebad
+		bdace -- badce
+		bdace -- dbace
+		acbde -- abcde
+		acbde -- acbed
+		acbde -- acdbe
+		ceadb -- cedab
+		ceadb -- caedb
+		ceadb -- ceabd
+		abcde -- abced
+		bcaed -- baced
+		caebd -- caedb
+		caebd -- acebd
+		caebd -- ceabd
+		dcaeb -- daceb
+		dacbe -- daceb
+		adceb -- acdeb
+		adceb -- daceb
+		ecdab -- cedab
+		ecdab -- edcab
+		cebad -- ceabd
+		acdeb -- acedb
+		acdeb -- acdbe
+		cedab -- cedba
+		caedb -- acedb
+		acbed -- acebd
+		acbed -- abced
+		daecb -- daceb
+		baced -- abced
+		acebd -- acedb
+		acebd -- aecbd
+		abced -- abecd
+		acedb -- aecdb
+		aecbd -- aecdb
+	}
+}

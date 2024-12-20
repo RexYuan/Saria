@@ -1,0 +1,201 @@
+digraph G {
+	subgraph cluster_1 {
+		P1_e [label=e]
+		P1_d [label=d]
+		P1_e -> P1_d
+		P1_a [label=a]
+		P1_e [label=e]
+		P1_a -> P1_e
+		P1_c [label=c]
+		P1_e [label=e]
+		P1_c -> P1_e
+		P1_b [label=b]
+		P1_c [label=c]
+		P1_b -> P1_c
+	}
+	subgraph cluster_2 {
+		P2_c [label=c]
+		P2_a [label=a]
+		P2_c -> P2_a
+		P2_d [label=d]
+		P2_a [label=a]
+		P2_d -> P2_a
+		P2_a [label=a]
+		P2_b [label=b]
+		P2_a -> P2_b
+		P2_e [label=e]
+		P2_c [label=c]
+		P2_e -> P2_c
+	}
+	subgraph cluster_3 {
+		P3_e [label=e]
+		P3_d [label=d]
+		P3_e -> P3_d
+		P3_b [label=b]
+		P3_a [label=a]
+		P3_b -> P3_a
+		P3_d [label=d]
+		P3_b [label=b]
+		P3_d -> P3_b
+		P3_c [label=c]
+		P3_e [label=e]
+		P3_c -> P3_e
+	}
+	subgraph cluster_4 {
+		P4_d [label=d]
+		P4_b [label=b]
+		P4_d -> P4_b
+		P4_a [label=a]
+		P4_c [label=c]
+		P4_a -> P4_c
+		P4_c [label=c]
+		P4_d [label=d]
+		P4_c -> P4_d
+	}
+	subgraph cluster_5 {
+		P5_b [label=b]
+		P5_a [label=a]
+		P5_b -> P5_a
+		P5_c [label=c]
+		P5_e [label=e]
+		P5_c -> P5_e
+		P5_a [label=a]
+		P5_c [label=c]
+		P5_a -> P5_c
+	}
+	subgraph cluster_6 {
+		P6_c [label=c]
+		P6_d [label=d]
+		P6_c -> P6_d
+		P6_e [label=e]
+		P6_d [label=d]
+		P6_e -> P6_d
+		P6_c [label=c]
+		P6_b [label=b]
+		P6_c -> P6_b
+		P6_a [label=a]
+		P6_e [label=e]
+		P6_a -> P6_e
+		P6_e [label=e]
+		P6_b [label=b]
+		P6_e -> P6_b
+	}
+	subgraph cluster_7 {
+		P7_e [label=e]
+		P7_a [label=a]
+		P7_e -> P7_a
+		P7_d [label=d]
+		P7_e [label=e]
+		P7_d -> P7_e
+		P7_a [label=a]
+		P7_b [label=b]
+		P7_a -> P7_b
+		P7_a [label=a]
+		P7_c [label=c]
+		P7_a -> P7_c
+	}
+	subgraph cluster_8 {
+		P8_a [label=a]
+		P8_b [label=b]
+		P8_a -> P8_b
+		P8_b [label=b]
+		P8_e [label=e]
+		P8_b -> P8_e
+		P8_a [label=a]
+		P8_c [label=c]
+		P8_a -> P8_c
+		P8_c [label=c]
+		P8_d [label=d]
+		P8_c -> P8_d
+	}
+	subgraph cluster_9 {
+		P9_d [label=d]
+		P9_a [label=a]
+		P9_d -> P9_a
+		P9_a [label=a]
+		P9_b [label=b]
+		P9_a -> P9_b
+		P9_a [label=a]
+		P9_e [label=e]
+		P9_a -> P9_e
+		P9_c [label=c]
+		P9_d [label=d]
+		P9_c -> P9_d
+	}
+	subgraph cluster_10 {
+		P10_a [label=a]
+		P10_b [label=b]
+		P10_a -> P10_b
+		P10_b [label=b]
+		P10_d [label=d]
+		P10_b -> P10_d
+		P10_d [label=d]
+		P10_e [label=e]
+		P10_d -> P10_e
+		P10_c [label=c]
+		P10_d [label=d]
+		P10_c -> P10_d
+	}
+	subgraph cluster_11 {
+		P11_e [label=e]
+		P11_d [label=d]
+		P11_e -> P11_d
+		P11_c [label=c]
+		P11_a [label=a]
+		P11_c -> P11_a
+		P11_c [label=c]
+		P11_e [label=e]
+		P11_c -> P11_e
+		P11_a [label=a]
+		P11_b [label=b]
+		P11_a -> P11_b
+		P11_e [label=e]
+		P11_b [label=b]
+		P11_e -> P11_b
+	}
+	subgraph cluster_12 {
+		P12_a [label=a]
+		P12_c [label=c]
+		P12_a -> P12_c
+		P12_d [label=d]
+		P12_a [label=a]
+		P12_d -> P12_a
+		P12_c [label=c]
+		P12_b [label=b]
+		P12_c -> P12_b
+		P12_d [label=d]
+		P12_e [label=e]
+		P12_d -> P12_e
+	}
+	subgraph cluster_13 {
+		P13_d [label=d]
+		P13_e [label=e]
+		P13_d -> P13_e
+		P13_c [label=c]
+		P13_b [label=b]
+		P13_c -> P13_b
+		P13_a [label=a]
+		P13_e [label=e]
+		P13_a -> P13_e
+		P13_e [label=e]
+		P13_b [label=b]
+		P13_e -> P13_b
+		P13_d [label=d]
+		P13_c [label=c]
+		P13_d -> P13_c
+	}
+	subgraph cluster_14 {
+		P14_b [label=b]
+		P14_a [label=a]
+		P14_b -> P14_a
+		P14_c [label=c]
+		P14_b [label=b]
+		P14_c -> P14_b
+		P14_e [label=e]
+		P14_b [label=b]
+		P14_e -> P14_b
+		P14_a [label=a]
+		P14_d [label=d]
+		P14_a -> P14_d
+	}
+}
