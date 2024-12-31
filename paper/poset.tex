@@ -67,6 +67,8 @@
 
 \begin{abstract}
 The poset cover problem seeks a minimum set of partial orders whose linear extensions cover a given set of linear orders. Recognizing its NP-completeness, we devised a non-trivial reduction to the Boolean satisfiability problem using a technique we call swap graphs, which avoids the complexity explosion of the naive method. By leveraging modern SAT solvers, we efficiently solve instances with reasonable universe sizes. Experimental results using the Z3 theorem prover on randomly generated inputs demonstrate the effectiveness of our method.
+
+\keywords{Partial Order \and SAT-Solving \and Reduction}
 \end{abstract}
 
 \section{Introduction}
@@ -79,7 +81,7 @@ We can find partial orders in various places in the wild. Scheduling tasks and a
 
 Mathematicians have formalized the concept of partial orders as a set of elements with a binary relation that is reflexive, antisymmetric, and transitive. This structure is called a partially ordered set, or \emph{poset} for short.
 
-By a foundational theorem called Szpilrajn extension theorem, every poset has a set of linear extensions. Intuitively, this means we can ``stretch'' a poset into a linear order. This is a powerful result that allows us to study posets by looking at their linearizations.
+By a foundational theorem called Szpilrajn extension theorem\cite{davey2002introduction}, every poset has a set of linear extensions. Intuitively, this means we can ``stretch'' a poset into a linear order. This is a powerful result that allows us to study posets by looking at their linearizations.
 
 In this paper, we address the poset cover problem. The poset cover problem is a combinatorial problem that involves finding a minimum set of partial orders whose linear extensions cover a given set of linear orders.
 
@@ -89,7 +91,7 @@ We propose a novel and non-trivial method to reduce the poset cover problem to a
 
 Our experimental results demonstrate the effectiveness of the proposed method. We extensively tested using the Z3\cite{de2008z3} theorem prover in Python on randomly generated inputs with varying universe and input sizes. The results show that our method performs well and could be further optimized by a simple divide-and-conquer heuristic.
 
-Future work includes exploring further optimizations to handle larger inputs and investigating potential applications involving partial orders, such as message sequence charts.
+Future work includes exploring further optimizations to handle larger inputs and investigating potential applications involving partial orders, such as message sequence charts and formal concept analysis.
 
 \section{Preliminaries}
 A \emph{partial order} is a binary relation that is reflexive, antisymmetric, and transitive. A \emph{partially ordered set} or \emph{poset} is a binary relational structure $\poset{P} = \tuple{\uni, \leq}$ where the \emph{universe} $\uni$ is a set and $\leq$ is a partial order on $\uni$; we refer to members of $\uni$ as elements of $\poset{P}$ and, where specificity is desired, to $\uni$ as $\uni[
@@ -103,7 +105,7 @@ A \emph{partial order} is a binary relation that is reflexive, antisymmetric, an
 
 The \emph{cover} relation $\covered$ of a poset $\poset{P}$ is the transitive reduction of its order relation; it describes the case of immediate successor: for $x, y \!\in\! \poset{P}$, $x \covered y$ if and only if $x \leq y$ and there is no $z \!\in\! \poset{P}$ such that $x \lneq z$ and $z \lneq y$. For Example~\ref{example:posetp}, the covered relation includes $a \covered b$\ ; $a \covered c$\ ; $b \covered d$\ ; and $c \covered d$. Note that $\tuple{a,d}$ is absent in $\covered$.
 
-Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figure:posetp} describes $\poset{P}$ with a graph $\tuple{V,E} = \tuple{\Omega,\covered}$.
+Notice that a poset is equivalent to an acyclic directed graph. Figure~\ref{figure:posetp} describes $\poset{P}$ with a graph $\tuple{V,E} = \tuple{\Omega,\covered}$. This is sometimes called the \emph{Hasse diagram} of a poset.
 
 %\vspace{-15px}
 % figure:posetp
@@ -339,7 +341,7 @@ Since $\Upsilon \subseteq \bigcup_{\poset{P} \in C} \lang{\poset{P}}$ can be eff
 
 The \emph{adjacent transposition}, or \emph{swap}, relation $\swap$ describes the case of ``off by one swap'' between linear posets with shared universe: for linear posets $\poset{L}_1,\poset{L}_2$, $\poset{L}_1 \swap \poset{L}_2$ if and only if there are $x, y \!\in\! \uni$ such that $\leq[\poset{L}_1] \cap \leq[\poset{L}_2] = {(\leq[\poset{L}_1] \cup \leq[\poset{L}_2])} - \set{\tuple{x,y},\tuple{y,x}}$; to specify which $x,y$ induce the relation, we write $\swap[x,y]$. For example, \lin{abcd} $\swap[b,c]$ \lin{acbd}. Note that $\swap$ is symmetric.
 
-For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{ruskey1992generating,pruesse1991generating,heath2013poset}. An iteration of the proof is in \ref{appendix:connected-proof}.
+For a set of linear posets $\Upsilon$, the \emph{swap graph} $\sgraph{\Upsilon}$ of it is the undirected graph $\tuple{V,E} = \tuple{\Upsilon,\swap}$. Figure~\ref{figure:graphlp} shows the swap graph $\sgraph{\lang{\poset{P}}}$ for $\poset{P}$ from Example~\ref{example:posetp}. Conveniently, a swap graph built from the language of a poset is connected \cite{ruskey1992generating,pruesse1991generating,heath2013poset}. An iteration of the proof is also in \ref{appendix:connected-proof}.
 
 % figure:graphlp
 \begin{figure}[h]
@@ -425,7 +427,7 @@ Finally, with swap graph method, we need not encode the entire problem input in 
 \section{A Special Case}
 Although, in general, solving the poset cover problem is hard, in the case that the given set of linearizations constitutes the language of a single poset, the problem can be solved in polynomial time. We can consider this special case as an opening jab at the problem, returning if and once it succeeds.
 
-We know, corollarily from Szpilrajn extension theorem, that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$. Additionally, with Corollary~\ref{corollary:final}, we can determine if a set of linearizations constitutes the language of a single poset in time $\bigo{\abs{\Upsilon} \!\cdot\! \abs{\uni}}$, and the solution to the poset cover problem is then the poset formed by the intersection of all linearizations.
+We know, corollarily from Szpilrajn extension theorem\cite{davey2002introduction}, that a poset is exactly the intersection of all its linearizations; that is, $\leq[\poset{P}] = \bigcap_{\poset{L} \in \lang{\poset{P}}} \leq[\poset{L}]$ for any poset $\poset{P}$. Additionally, with Corollary~\ref{corollary:final}, we can determine if a set of linearizations constitutes the language of a single poset in time $\bigo{\abs{\Upsilon} \!\cdot\! \abs{\uni}}$, and the solution to the poset cover problem is then the poset formed by the intersection of all linearizations.
 
 \section{Experimentation}
 To test the limits of our method, we experimented on distinct randomly generated inputs using the Z3\cite{de2008z3} theorem prover from Microsoft Research in Python.
@@ -470,7 +472,7 @@ We presented a novel and non-trivial method to reduce the poset cover problem to
 
 Swap graphs enabled a divide-and-conquer heuristic to quickly reduce the problem size. Even under the cases where the inputs cannot be divided into smaller sub-problems, our approach efficiently handles problem constraints and solves instances with a reasonable size.
 
-Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where the poset cover problems is relevant, such as message sequence charts synthesis from traces.
+Experimental results demonstrate the effectiveness of our method in practice. Future work includes exploring further optimizations to handle larger inputs and potential applications where the poset cover problems is relevant, such as message sequence charts and formal concept analysis.
 
 \appendix
 \renewcommand{\thesection}{\appendixname}
@@ -509,6 +511,7 @@ In addition, we describe the case of \emph{incomparability} in a poset $\poset{P
 \end{lemma}
 
 \begin{theorem}
+    \label{theorem:connected}
     For a poset $\poset{P}$, $\sgraph{\lang{\poset{P}}}$ is connected by exactly all the minimal swapping sequences.
 \end{theorem}
 
