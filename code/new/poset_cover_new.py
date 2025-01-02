@@ -1,5 +1,3 @@
-
-
 from pysat.formula import *
 from pysat.solvers import Solver
 
@@ -35,19 +33,6 @@ def tseitin_or_and(and_groups):
     cnf.append(or_clause + [-top_aux_var])
 
     return cnf, top_aux_var
-
-# formula = [
-#     [[v.id()], [v.id()]],
-#     [[v.id()], [v.id()]]
-# ]
-
-# cnf_clauses, or_var = tseitin_or_and(formula)
-
-# print("CNF Clauses:")
-# print(cnf_clauses)
-# for clause in cnf_clauses:
-#     print(clause)
-# print("OR variable:", or_var)
 
 def poset_axioms(universe, name, total=False):
     constraints = []
@@ -107,46 +92,56 @@ def nle_constraints(universe, name, lin):
         constraints.append( v.id((name,*r)) )
     return constraints
 
-a = poset_axioms(set('ab'), '1')
-b = poset_axioms(set('ab'), '2')
-
-l1 = le_constraints(set('ab'), '1', 'ab')
-l2 = le_constraints(set('ab'), '1', 'ba')
-
-l3=le_constraints(set('ab'), '2', 'ab')
-l4=le_constraints(set('ab'), '2', 'ba')
-
+# Setup solver
 s = Solver(name='m22')
+
+# Create poset axioms for '1' and '2'
+a = poset_axioms(set('abc'), '1')
+b = poset_axioms(set('abc'), '2')
+
+# Constraints for linear orders
+l1 = le_constraints(set('abc'), '1', 'abc')
+l2 = le_constraints(set('abc'), '2', 'abc')
+l3 = le_constraints(set('abc'), '1', 'acb')
+l3 = le_constraints(set('abc'), '2', 'acb')
+l3 = le_constraints(set('abc'), '1', 'cba')
+l3 = le_constraints(set('abc'), '2', 'cba')
+
+# Append formulas
 s.append_formula(a)
 s.append_formula(b)
 
-f1 = [l1,l3]
+# Add CNF constraints for combinations of linear orders
+f1 = [l1]
 cnf_clauses, or_var = tseitin_or_and(f1)
+print(cnf_clauses, or_var)
 s.append_formula(cnf_clauses)
 s.add_clause([or_var])
 
-f1 = [l2,l4]
-cnf_clauses, or_var = tseitin_or_and(f1)
+f2 = [l3]
+cnf_clauses, or_var = tseitin_or_and(f2)
+print(cnf_clauses, or_var)
 s.append_formula(cnf_clauses)
 s.add_clause([or_var])
 
-# s.add_clause(nle_constraints(set('abc'), '1', 'bac'))
-# s.add_clause(nle_constraints(set('abc'), '1', 'bca'))
-# s.add_clause(nle_constraints(set('abc'), '1', 'cab'))
+s.add_clause(nle_constraints(set('abc'), '1', 'bac'))
+s.add_clause(nle_constraints(set('abc'), '1', 'bca'))
+s.add_clause(nle_constraints(set('abc'), '1', 'cab'))
 # s.add_clause(nle_constraints(set('abc'), '1', 'cba'))
 
-# s.add_clause(nle_constraints(set('abc'), '2', 'bac'))
-# s.add_clause(nle_constraints(set('abc'), '2', 'bca'))
-# s.add_clause(nle_constraints(set('abc'), '2', 'cab'))
+s.add_clause(nle_constraints(set('abc'), '2', 'bac'))
+s.add_clause(nle_constraints(set('abc'), '2', 'bca'))
+s.add_clause(nle_constraints(set('abc'), '2', 'cab'))
 # s.add_clause(nle_constraints(set('abc'), '2', 'cba'))
 
+# Solve and print results
 print(s.solve())
 print(s.get_model())
 
+# Verify constraints in the solution
 omega = set('abc')
 for name in ['1', '2']:
     for x in omega:
         for y in omega-{x}:
-            # print((x,y), v.id((x, y)))
             if v.id((name,x,y)) in s.get_model():
                 print((name,x,y), v.id((name,x, y)))
