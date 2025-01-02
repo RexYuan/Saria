@@ -81,6 +81,7 @@ def are_logically_equivalent(cnf1, cnf2):
 
 # Example formulas (list of lists of clauses)
 # Formula 1: ((x1 OR x2) AND (x3 OR x4)) OR ((x5 OR x6) AND (x7 OR x8))
+# chatgpt magic
 cnf1 = [
 [9, -1],
 [9, -2],
@@ -103,6 +104,7 @@ cnf1 = [
 ]
 
 # Formula 2: ((x1 OR x2) AND (x3 OR x4)) OR ((x5 OR x6) AND (x7 OR x8))
+# my encoding
 cnf2 = [
 [9, -1],
 [9, -2],

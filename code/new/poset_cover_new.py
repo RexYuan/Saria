@@ -5,70 +5,49 @@ from pysat.solvers import Solver
 
 v = Formula.export_vpool()
 
-def tseitin_or_and_or(formula):
-    """
-    Perform Tseitin transformation for a formula with AND groups of OR clauses.
+def tseitin_or_and(and_groups):
+    cnf = []
+    or_auxiliary_vars = []  # To collect auxiliary variables representing OR terms
 
-    Formula is given as a list of AND groups, each containing OR clauses.
-    Args:
-        formula (list): The input formula, consisting of multiple AND groups of ORs.
-    Returns:
-        tuple: CNF clauses and the updated variable counter.
-    """
-    clauses = []
-    and_group_vars = []  # To store the auxiliary variables for each AND group
+    for and_group in and_groups:
+        # Create an auxiliary variable for this AND group
+        and_aux_var = v.id()
+        and_clauses = []
 
-    # Step 1: Encode each OR group with an auxiliary variable
-    for and_group in formula:
-        and_group_vars_in_group = []
+        # Each AND group must be true if the auxiliary variable is true
+        for literal in and_group:
+            clause = [literal] + [-and_aux_var]
+            cnf.append(clause)  # Literal implies auxiliary variable
+            and_clauses.append(-literal)
 
-        # Encode each OR group in the AND group
-        for or_group in and_group:
-            # Generate a new variable for this OR group
-            group_var = v.id()
-            and_group_vars_in_group.append(group_var)
+        # The auxiliary variable implies the AND of the literals
+        cnf.append(and_clauses + [and_aux_var])
 
-            # Flatten the literals in the OR group
-            group_literals = or_group
+        # Collect the auxiliary variable for the OR term
+        or_auxiliary_vars.append(and_aux_var)
 
-            # Encode the OR group as a set of clauses
-            clauses.append([-group_var] + group_literals)  # (-group_var OR all literals)
-            for literal in group_literals:
-                clauses.append([group_var, -literal])  # (group_var OR -literal)
+    or_clause = []
+    top_aux_var = v.id()
+    for or_auxiliary_var in or_auxiliary_vars:
+        clause = [-or_auxiliary_var] + [top_aux_var]
+        cnf.append(clause)
+        or_clause.append(or_auxiliary_var)
+    cnf.append(or_clause + [-top_aux_var])
 
-        # Step 2: Combine the OR groups in the AND group with a new AND auxiliary variable
-        and_group_var = v.id()
-        and_group_vars.append(and_group_var)
+    return cnf, top_aux_var
 
-        # Add clause to combine the OR groups using AND (i.e., a new variable for the AND)
-        and_group_clause = [and_group_var]
-        for group_var in and_group_vars_in_group:
-            and_group_clause.append(group_var)
-        clauses.append(and_group_clause)
+# formula = [
+#     [[v.id()], [v.id()]],
+#     [[v.id()], [v.id()]]
+# ]
 
-    # Step 3: Combine the AND groups using an OR operation
-    or_var = v.id()
-    for and_group_var in and_group_vars:
-        clauses.append([-or_var] + [and_group_var])  # (-or_var OR each AND group variable)
-    for and_group_var in and_group_vars:
-        clauses.append([or_var, -and_group_var])  # (or_var OR -each AND group variable)
+# cnf_clauses, or_var = tseitin_or_and(formula)
 
-    return clauses, or_var
-
-# Example input formula: ((x1|x2)&(x3|x4)) | ((x5|x6)&(x7|x8))
-formula = [
-    [[v.id(), v.id()], [v.id(), v.id()]],  # ((x1 OR x2) AND (x3 OR x4))
-    [[v.id(), v.id()], [v.id(), v.id()]]   # ((x5 OR x6) AND (x7 OR x8))
-]
-
-# Tseitin encoding
-cnf_clauses, or_var = tseitin_or_and_or(formula)
-
-print("CNF Clauses:")
+# print("CNF Clauses:")
 # print(cnf_clauses)
-for clause in cnf_clauses:
-    print(clause)
-print("OR variable:", or_var)
+# for clause in cnf_clauses:
+#     print(clause)
+# print("OR variable:", or_var)
 
 def poset_axioms(universe, name, total=False):
     constraints = []
@@ -77,11 +56,11 @@ def poset_axioms(universe, name, total=False):
     for x in omega:
         for y in omega-{x}:
             # forall x!=y, -(x<y & y<x)
-            constraints.append( [-v.id((x,y)),-v.id((y,x))] )
+            constraints.append( [-v.id((name,x,y)),-v.id((name,y,x))] )
 
             for z in omega-{x,y}:
                 # forall x!=y!=z, (x<y & y<z) => x<z
-                constraints.append( [-v.id((x,y)),-v.id((y,z)),v.id((x,z))] )
+                constraints.append( [-v.id((name,x,y)),-v.id((name,y,z)),v.id((name,x,z))] )
     return constraints
 
 def le_constraints(universe, name, lin):
@@ -103,7 +82,7 @@ def le_constraints(universe, name, lin):
 
     # build constraints on name : forall r not in <lin>, r not in <name>
     for r in ords:
-        constraints.append( [-v.id(r)] )
+        constraints.append( -v.id((name,*r)) )
     return constraints
 
 def nle_constraints(universe, name, lin):
@@ -125,34 +104,49 @@ def nle_constraints(universe, name, lin):
 
     # build constraints on name : forall r not in <lin>, r not in <name>
     for r in ords:
-        constraints.append( v.id(r) )
+        constraints.append( v.id((name,*r)) )
     return constraints
 
-a = poset_axioms(set('abc'), '1')
-# print(a)
-l = le_constraints(set('abc'), '1', 'abc')
-# print(l)
-l2 = le_constraints(set('abc'), '1', 'acb')
-# print(l2)
+a = poset_axioms(set('ab'), '1')
+b = poset_axioms(set('ab'), '2')
+
+l1 = le_constraints(set('ab'), '1', 'ab')
+l2 = le_constraints(set('ab'), '1', 'ba')
+
+l3=le_constraints(set('ab'), '2', 'ab')
+l4=le_constraints(set('ab'), '2', 'ba')
 
 s = Solver(name='m22')
 s.append_formula(a)
-s.append_formula(l)
-s.append_formula(l2)
+s.append_formula(b)
 
-s.add_clause(nle_constraints(set('abc'), '1', 'bac'))
-s.add_clause(nle_constraints(set('abc'), '1', 'bca'))
-s.add_clause(nle_constraints(set('abc'), '1', 'cab'))
-s.add_clause(nle_constraints(set('abc'), '1', 'cba'))
+f1 = [l1,l3]
+cnf_clauses, or_var = tseitin_or_and(f1)
+s.append_formula(cnf_clauses)
+s.add_clause([or_var])
 
-# print(s.solve())
-# print(s.get_model())
+f1 = [l2,l4]
+cnf_clauses, or_var = tseitin_or_and(f1)
+s.append_formula(cnf_clauses)
+s.add_clause([or_var])
 
-# omega = set('abc')
-# # poset = set()
-# for x in omega:
-#     for y in omega-{x}:
-#         # print((x,y), v.id((x, y)))
-#         if v.id((x,y)) in s.get_model():
+# s.add_clause(nle_constraints(set('abc'), '1', 'bac'))
+# s.add_clause(nle_constraints(set('abc'), '1', 'bca'))
+# s.add_clause(nle_constraints(set('abc'), '1', 'cab'))
+# s.add_clause(nle_constraints(set('abc'), '1', 'cba'))
+
+# s.add_clause(nle_constraints(set('abc'), '2', 'bac'))
+# s.add_clause(nle_constraints(set('abc'), '2', 'bca'))
+# s.add_clause(nle_constraints(set('abc'), '2', 'cab'))
+# s.add_clause(nle_constraints(set('abc'), '2', 'cba'))
+
+print(s.solve())
+print(s.get_model())
+
+omega = set('abc')
+for name in ['1', '2']:
+    for x in omega:
+        for y in omega-{x}:
             # print((x,y), v.id((x, y)))
-            # poset.add( (x,y) )
+            if v.id((name,x,y)) in s.get_model():
+                print((name,x,y), v.id((name,x, y)))
