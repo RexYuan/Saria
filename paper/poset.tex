@@ -12,11 +12,10 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{doi}
-\usepackage{minted}
 \usepackage{appendix}
 
-\graphicspath{ {images/} }
-%\DeclareGraphicsExtensions{.png,.pdf}
+\graphicspath{ {images} }
+\DeclareGraphicsExtensions{.pdf,.png}
 
 \usetikzlibrary{arrows,shapes,fit}
 \pgfdeclarelayer{background}
@@ -33,7 +32,6 @@
 \renewcommand{\implies}{\rightarrow}
 
 \newcommand{\comment}[1]{\texttt{COMMENT TO BOW YAW:\\#1}}
-\newcommand{\bye}[1]{}
 \newcommand{\bicond}{\leftrightarrow}
 \newcommand{\poset}[1]{\mathcal{#1}}
 \newcommand{\uni}[1][]{\Omega_{#1}}
@@ -53,7 +51,12 @@
 
 \begin{document}
 
-\title{SAT-Solving the Poset Cover Problem}
+\title{
+    SAT-Solving the Poset Cover Problem
+    \thanks{This work was conducted in 2017--2018 while the first author
+    was an undergraduate student at National Taiwan Normal University
+    and an adjunct research assistant at Academia Sinica.}
+}
 
 \author{Chih-Cheng Rex Yuan \and
         Bow-Yaw Wang}
